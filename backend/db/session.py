@@ -1,19 +1,17 @@
 """
-Database session management
+Database session management - MVP version for SQLite
 """
 
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
 from sqlalchemy.orm import declarative_base
 from core.config import settings
 
-# Create async engine
+# Create async engine - simplified for SQLite
+# SQLite doesn't support pool_size/max_overflow
 engine = create_async_engine(
     settings.DATABASE_URL,
     echo=settings.DEBUG,
-    future=True,
-    pool_pre_ping=True,
-    pool_size=10,
-    max_overflow=20
+    future=True
 )
 
 # Create session factory
