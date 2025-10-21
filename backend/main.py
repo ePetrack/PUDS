@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 import uvicorn
 
-from api.routes import dashboard, bills, analytics, buildings, financial
+from api.routes import dashboard, bills, analytics, buildings, financial, analytics_advanced
 from core.config import settings
 from db.session import engine, Base
 
@@ -68,6 +68,7 @@ async def health_check():
 app.include_router(dashboard.router, prefix="/api/dashboard", tags=["Dashboard"])
 app.include_router(bills.router, prefix="/api/bills", tags=["Bills Management"])
 app.include_router(analytics.router, prefix="/api/analytics", tags=["Analytics"])
+app.include_router(analytics_advanced.router, prefix="/api/analytics-advanced", tags=["Advanced Analytics (DuckDB)"])
 app.include_router(buildings.router, prefix="/api/buildings", tags=["Buildings"])
 app.include_router(financial.router, prefix="/api/financial", tags=["Financial"])
 

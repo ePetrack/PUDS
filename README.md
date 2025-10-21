@@ -25,11 +25,13 @@ An enterprise-grade, open-source utility management system following APPA and IS
 - SQLAlchemy - ORM for database operations
 - Pydantic - Data validation
 
-**Database**
-- SQLite - Default (no installation required)
-- PostgreSQL 15+ (optional) - Production data store
-- TimescaleDB (optional) - Time-series extension for meter data
-- DuckDB - Analytics engine for reporting
+**Database** (Dual Architecture)
+- **SQLite** - Transactional data (OLTP) - writes, updates, deletes
+- **DuckDB** - Analytical queries (OLAP) - reads from SQLite, 10-100x faster analytics
+- No data duplication - DuckDB reads directly from SQLite!
+- Optional: PostgreSQL + TimescaleDB for production scaling
+
+📖 See [Dual Database Architecture](docs/DUAL_DATABASE_ARCHITECTURE.md) for details
 
 ### Modules
 
