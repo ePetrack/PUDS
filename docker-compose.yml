@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: timescale/timescaledb:latest-pg15
+    container_name: puds_postgres
+    environment:
+      POSTGRES_DB: puds
+      POSTGRES_USER: puds_user
+      POSTGRES_PASSWORD: puds_password_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./backend/scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - puds_network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: puds_backend
+    environment:
+      DATABASE_URL: postgresql://puds_user:puds_password_dev@postgres:5432/puds
+      ENV: development
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - postgres
+    networks:
+      - puds_network
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: puds_frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - puds_network
+    command: npm run dev -- --host
+
+volumes:
+  pgdata:
+
+networks:
+  puds_network:
+    driver: bridge

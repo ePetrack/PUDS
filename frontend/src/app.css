@@ -1,0 +1,140 @@
+/* PUDS Global Styles - Modern Energy Management Dashboard */
+
+:root {
+	/* Color Palette - Energy Dashboard Theme */
+	--color-primary: #2563eb;
+	--color-primary-dark: #1e40af;
+	--color-secondary: #10b981;
+	--color-warning: #f59e0b;
+	--color-danger: #ef4444;
+	--color-info: #06b6d4;
+
+	/* Backgrounds */
+	--bg-primary: #ffffff;
+	--bg-secondary: #f8fafc;
+	--bg-tertiary: #f1f5f9;
+	--bg-dark: #0f172a;
+	--bg-card: #ffffff;
+
+	/* Text Colors */
+	--text-primary: #0f172a;
+	--text-secondary: #475569;
+	--text-muted: #94a3b8;
+	--text-white: #ffffff;
+
+	/* Borders */
+	--border-color: #e2e8f0;
+	--border-radius: 8px;
+	--border-radius-lg: 12px;
+
+	/* Shadows */
+	--shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+	--shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+	--shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+
+	/* Spacing */
+	--spacing-xs: 0.25rem;
+	--spacing-sm: 0.5rem;
+	--spacing-md: 1rem;
+	--spacing-lg: 1.5rem;
+	--spacing-xl: 2rem;
+
+	/* Typography */
+	--font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+	--font-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', monospace;
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	font-family: var(--font-sans);
+	background-color: var(--bg-secondary);
+	color: var(--text-primary);
+	line-height: 1.6;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-weight: 600;
+	line-height: 1.2;
+	color: var(--text-primary);
+}
+
+h1 { font-size: 2.25rem; }
+h2 { font-size: 1.875rem; }
+h3 { font-size: 1.5rem; }
+h4 { font-size: 1.25rem; }
+h5 { font-size: 1.125rem; }
+h6 { font-size: 1rem; }
+
+/* Card Styles */
+.card {
+	background: var(--bg-card);
+	border-radius: var(--border-radius);
+	box-shadow: var(--shadow);
+	padding: var(--spacing-lg);
+	border: 1px solid var(--border-color);
+}
+
+/* Button Styles */
+.btn {
+	padding: 0.5rem 1rem;
+	border-radius: var(--border-radius);
+	font-weight: 500;
+	cursor: pointer;
+	border: none;
+	transition: all 0.2s;
+	font-size: 0.875rem;
+}
+
+.btn-primary {
+	background: var(--color-primary);
+	color: var(--text-white);
+}
+
+.btn-primary:hover {
+	background: var(--color-primary-dark);
+}
+
+/* Utility Classes */
+.text-muted {
+	color: var(--text-muted);
+}
+
+.text-secondary {
+	color: var(--text-secondary);
+}
+
+.flex {
+	display: flex;
+}
+
+.flex-col {
+	flex-direction: column;
+}
+
+.gap-sm { gap: var(--spacing-sm); }
+.gap-md { gap: var(--spacing-md); }
+.gap-lg { gap: var(--spacing-lg); }
+
+.grid {
+	display: grid;
+}
+
+.grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+.grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+@media (max-width: 768px) {
+	.grid-cols-2,
+	.grid-cols-3,
+	.grid-cols-4 {
+		grid-template-columns: repeat(1, minmax(0, 1fr));
+	}
+}
