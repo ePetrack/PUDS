@@ -37,7 +37,8 @@ class DuckDBAnalytics:
         Args:
             sqlite_db_path: Path to the SQLite database file
         """
-        self.sqlite_db_path = sqlite_db_path
+        # Normalize path for Windows compatibility
+        self.sqlite_db_path = os.path.abspath(sqlite_db_path).replace('\\', '/')
         self.conn: Optional[duckdb.DuckDBPyConnection] = None
 
     def get_connection(self) -> duckdb.DuckDBPyConnection:
