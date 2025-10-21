@@ -2,6 +2,14 @@
 
 An enterprise-grade, open-source utility management system following APPA and ISO 50001 standards.
 
+## Quick Start
+
+**Windows Users (No Admin Rights):** See [QUICKSTART_WINDOWS.md](QUICKSTART_WINDOWS.md) - 2 minute setup!
+
+**Docker Users:** `docker-compose up -d`
+
+**Manual Setup:** See [SETUP.md](SETUP.md) for detailed instructions
+
 ## System Architecture
 
 ### Technology Stack
@@ -18,8 +26,9 @@ An enterprise-grade, open-source utility management system following APPA and IS
 - Pydantic - Data validation
 
 **Database**
-- PostgreSQL 15+ - Primary data store
-- TimescaleDB - Time-series extension for meter data
+- SQLite - Default (no installation required)
+- PostgreSQL 15+ (optional) - Production data store
+- TimescaleDB (optional) - Time-series extension for meter data
 - DuckDB - Analytics engine for reporting
 
 ### Modules
