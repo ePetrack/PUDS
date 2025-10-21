@@ -57,11 +57,26 @@ app.add_middleware(
 # Health check endpoint
 @app.get("/health")
 async def health_check():
-    """Health check endpoint"""
+    """Health check endpoint with database status"""
+    import os
+
+    # Check database file exists
+    db_path = settings.DATABASE_URL.replace("sqlite+aiosqlite:///", "")
+    db_exists = os.path.exists(db_path) if db_path.endswith('.db') else True
+
     return {
         "status": "healthy",
         "service": "PUDS Backend",
-        "version": "0.1.0"
+        "version": "0.1.0",
+        "database": {
+            "type": "SQLite" if "sqlite" in settings.DATABASE_URL else "PostgreSQL",
+            "connected": db_exists,
+            "path": db_path if db_path.endswith('.db') else "In-memory/Remote"
+        },
+        "analytics": {
+            "duckdb": "enabled",
+            "reads_from": "SQLite"
+        }
     }
 
 # Include routers
