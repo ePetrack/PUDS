@@ -1,0 +1,100 @@
+:root {
+  --bg: #fafaf7;
+  --fg: #1a1a1a;
+  --muted: #6b6b6b;
+  --line: #e3e3df;
+  --accent: #2c6e49;
+  --warn: #b3261e;
+  --good: #2c6e49;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font: 15px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+}
+
+header {
+  display: flex;
+  align-items: baseline;
+  gap: 1.5rem;
+  padding: .75rem 1.5rem;
+  border-bottom: 1px solid var(--line);
+  background: white;
+}
+header h1 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: .03em;
+}
+nav { display: flex; gap: 1rem; }
+nav a {
+  color: var(--muted);
+  text-decoration: none;
+  padding: .15rem 0;
+  border-bottom: 2px solid transparent;
+}
+nav a:hover { color: var(--fg); }
+nav a.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+main { max-width: 960px; margin: 0 auto; padding: 1.5rem; }
+h2 { margin-top: 0; }
+h3 { margin-top: 2rem; }
+
+table { width: 100%; border-collapse: collapse; background: white; }
+th, td { padding: .5rem .75rem; border-bottom: 1px solid var(--line); text-align: left; }
+th { font-weight: 600; background: #f3f3ee; }
+
+form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: .75rem;
+  background: white;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+label { display: flex; flex-direction: column; gap: .25rem; font-size: .85rem; color: var(--muted); }
+input, select { font: inherit; padding: .4rem .5rem; border: 1px solid var(--line); border-radius: 4px; background: white; }
+button {
+  grid-column: 1 / -1;
+  justify-self: start;
+  background: var(--accent);
+  color: white;
+  border: 0;
+  padding: .5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font: inherit;
+}
+button:hover { filter: brightness(1.1); }
+
+ul.stats {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: .5rem;
+}
+ul.stats li {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: .75rem 1rem;
+  color: var(--muted);
+}
+ul.stats li span {
+  display: block;
+  font-size: 1.6rem;
+  color: var(--fg);
+  font-weight: 700;
+}
+
+.over { color: var(--warn); font-weight: 600; }
+.ok { color: var(--good); }
+.empty { color: var(--muted); font-style: italic; }
+footer { padding: 1.5rem; text-align: center; color: var(--muted); font-size: .85rem; }
