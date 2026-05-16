@@ -1,8 +1,4 @@
--- PUDS schema. Vanilla DuckDB only. Idempotent.
-
--- Enum types. DuckDB raises if the type already exists, so guard with a check.
--- (DuckDB does not yet support `CREATE TYPE IF NOT EXISTS`; we use a probe.)
--- The application calls db.ts:ensureEnums() before running this file.
+-- ENUM types are created by src/db.ts:ensureEnums() (DuckDB has no CREATE TYPE IF NOT EXISTS).
 
 CREATE SEQUENCE IF NOT EXISTS seq_site;
 CREATE TABLE IF NOT EXISTS site (

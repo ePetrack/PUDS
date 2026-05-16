@@ -1,6 +1,4 @@
-// HTML helpers. Plain template literals; no JSX, no bundler.
-
-export function fmt(v: unknown): string {
+function fmt(v: unknown): string {
   if (v === null || v === undefined) return '';
   if (typeof v === 'string') return v;
   if (typeof v === 'number' || typeof v === 'boolean') return String(v);
@@ -36,6 +34,16 @@ export function table<T>(rows: T[], cols: Column<T>[]): string {
   return `<table><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table>`;
 }
 
+export function options<T>(
+  items: readonly T[],
+  value: (item: T) => unknown = (i) => i,
+  label: (item: T) => unknown = (i) => i,
+): string {
+  return items
+    .map((i) => `<option value="${esc(value(i))}">${esc(label(i))}</option>`)
+    .join('');
+}
+
 const NAV = [
   ['/', 'Dashboard'],
   ['/sites', 'Sites'],
@@ -68,20 +76,4 @@ export function page(title: string, body: string, opts: { active?: string } = {}
   <footer>Personal utility data system · DuckDB</footer>
 </body>
 </html>`;
-}
-
-export function html(strings: TemplateStringsArray, ...values: unknown[]): string {
-  let out = '';
-  for (let i = 0; i < strings.length; i++) {
-    out += strings[i];
-    if (i < values.length) {
-      const v = values[i];
-      out += Array.isArray(v) ? v.join('') : esc(v);
-    }
-  }
-  return out;
-}
-
-export function raw(s: string): { __raw: string } {
-  return { __raw: s };
 }

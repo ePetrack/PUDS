@@ -1,6 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 import { query, exec } from '../db.js';
-import { page, table, esc } from '../views/layout.js';
+import { page, table, esc, options } from '../views/layout.js';
+import { UTILITIES, UNITS, isUtility, isUnit } from '../constants.js';
 
 type Meter = {
   id: number;
@@ -11,21 +12,15 @@ type Meter = {
 };
 type SiteOpt = { id: number; name: string };
 
-const UTILITIES = ['electric', 'gas', 'water'] as const;
-const UNITS = ['kWh', 'm3', 'therm', 'gal', 'L'] as const;
-
 export default async function (app: FastifyInstance): Promise<void> {
   app.get('/meters', async (_req, reply) => {
-    const meters = await query<Meter>(`
-      SELECT m.id, s.name AS site_name, m.utility, m.unit, m.label
-      FROM meter m JOIN site s ON s.id = m.site_id
-      ORDER BY s.name, m.utility, m.label`);
-    const sites = await query<SiteOpt>(`SELECT id, name FROM site ORDER BY name`);
-    const siteOptions = sites
-      .map((s) => `<option value="${esc(s.id)}">${esc(s.name)}</option>`)
-      .join('');
-    const utilOptions = UTILITIES.map((u) => `<option>${u}</option>`).join('');
-    const unitOptions = UNITS.map((u) => `<option>${u}</option>`).join('');
+    const [meters, sites] = await Promise.all([
+      query<Meter>(`
+        SELECT m.id, s.name AS site_name, m.utility, m.unit, m.label
+        FROM meter m JOIN site s ON s.id = m.site_id
+        ORDER BY s.name, m.utility, m.label`),
+      query<SiteOpt>(`SELECT id, name FROM site ORDER BY name`),
+    ]);
     const body = `
       ${table(meters, [
         { header: 'ID',      cell: (r) => esc(r.id) },
@@ -36,9 +31,9 @@ export default async function (app: FastifyInstance): Promise<void> {
       ])}
       <h3>Add meter</h3>
       <form method="post" action="/meters">
-        <label>Site <select name="site_id" required>${siteOptions}</select></label>
-        <label>Utility <select name="utility">${utilOptions}</select></label>
-        <label>Unit <select name="unit">${unitOptions}</select></label>
+        <label>Site <select name="site_id" required>${options(sites, (s) => s.id, (s) => s.name)}</select></label>
+        <label>Utility <select name="utility">${options(UTILITIES)}</select></label>
+        <label>Unit <select name="unit">${options(UNITS)}</select></label>
         <label>Label <input name="label" placeholder="main" /></label>
         <button>Add</button>
       </form>`;
@@ -48,12 +43,10 @@ export default async function (app: FastifyInstance): Promise<void> {
   app.post<{
     Body: { site_id: string; utility: string; unit: string; label?: string };
   }>('/meters', async (req, reply) => {
-    const body = req.body ?? ({} as { site_id?: string; utility?: string; unit?: string; label?: string });
-    const site_id = Number(body.site_id);
-    const utility = String(body.utility ?? '');
-    const unit = String(body.unit ?? '');
-    const label = (body.label ?? '').trim() || 'main';
-    if (!Number.isInteger(site_id) || !UTILITIES.includes(utility as never) || !UNITS.includes(unit as never)) {
+    const site_id = Number(req.body.site_id);
+    const { utility, unit } = req.body;
+    const label = (req.body.label ?? '').trim() || 'main';
+    if (!Number.isInteger(site_id) || !isUtility(utility) || !isUnit(unit)) {
       return reply.code(400).send('invalid input');
     }
     await exec(

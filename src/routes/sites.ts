@@ -24,9 +24,8 @@ export default async function (app: FastifyInstance): Promise<void> {
   });
 
   app.post<{ Body: { name: string; address?: string } }>('/sites', async (req, reply) => {
-    const body = req.body ?? ({} as { name?: string; address?: string });
-    const name = (body.name ?? '').trim();
-    const address = (body.address ?? '').trim() || null;
+    const name = (req.body.name ?? '').trim();
+    const address = (req.body.address ?? '').trim() || null;
     if (!name) return reply.code(400).send('name required');
     await exec(`INSERT INTO site (name, address) VALUES ($1, $2)`, [name, address]);
     reply.redirect('/sites', 303);

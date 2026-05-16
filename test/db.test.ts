@@ -3,10 +3,6 @@ import assert from 'node:assert/strict';
 import { DuckDBInstance } from '@duckdb/node-api';
 import { readFileSync } from 'node:fs';
 
-// Self-contained smoke test against an in-memory DuckDB.
-// Validates schema applies cleanly, ENUMs work, and v_period_usage
-// computes deltas with the LAG window function.
-
 async function setupMemoryDb() {
   const instance = await DuckDBInstance.create(':memory:');
   const conn = await instance.connect();

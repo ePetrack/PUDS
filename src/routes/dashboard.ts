@@ -18,25 +18,27 @@ type Overage = {
 
 export default async function (app: FastifyInstance): Promise<void> {
   app.get('/', async (_req, reply) => {
-    const [counts] = await query<Counts>(`
-      SELECT
-        (SELECT COUNT(*) FROM site)::INTEGER     AS sites,
-        (SELECT COUNT(*) FROM meter)::INTEGER    AS meters,
-        (SELECT COUNT(*) FROM reading)::INTEGER  AS readings,
-        (SELECT COUNT(*) FROM bill)::INTEGER     AS bills`);
-    const latest = await query<LatestUsage>(`
-      SELECT s.name AS site_name, u.utility, u.month, u.usage
-      FROM v_monthly_usage u JOIN site s ON s.id = u.site_id
-      ORDER BY u.month DESC, s.name, u.utility
-      LIMIT 12`);
-    const overages = await query<Overage>(`
-      SELECT site_name, utility, month, pct_of_budget
-      FROM v_budget_status
-      WHERE over_budget
-      ORDER BY pct_of_budget DESC NULLS LAST
-      LIMIT 3`);
+    const [countsRows, latest, overages] = await Promise.all([
+      query<Counts>(`
+        SELECT
+          (SELECT COUNT(*) FROM site)::INTEGER     AS sites,
+          (SELECT COUNT(*) FROM meter)::INTEGER    AS meters,
+          (SELECT COUNT(*) FROM reading)::INTEGER  AS readings,
+          (SELECT COUNT(*) FROM bill)::INTEGER     AS bills`),
+      query<LatestUsage>(`
+        SELECT s.name AS site_name, u.utility, u.month, u.usage
+        FROM v_monthly_usage u JOIN site s ON s.id = u.site_id
+        ORDER BY u.month DESC, s.name, u.utility
+        LIMIT 12`),
+      query<Overage>(`
+        SELECT site_name, utility, month, pct_of_budget
+        FROM v_budget_status
+        WHERE over_budget
+        ORDER BY pct_of_budget DESC NULLS LAST
+        LIMIT 3`),
+    ]);
 
-    const c = counts ?? { sites: 0, meters: 0, readings: 0, bills: 0 };
+    const c = countsRows[0] ?? { sites: 0, meters: 0, readings: 0, bills: 0 };
     const summary = `
       <ul class="stats">
         <li><span>${esc(c.sites)}</span> sites</li>

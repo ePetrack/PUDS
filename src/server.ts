@@ -14,8 +14,18 @@ import alerts from './routes/alerts.js';
 const PORT = Number(process.env.PORT ?? 3000);
 
 async function main(): Promise<void> {
-  await getDb(); // open + apply schema/views before serving traffic
+  await getDb();
   const app = Fastify({ logger: true });
+  app.setErrorHandler((err: Error, _req, reply) => {
+    const msg = err.message ?? '';
+    if (/Constraint Error|Duplicate key|violates unique/i.test(msg)) {
+      app.log.warn({ err }, 'constraint violation');
+      return reply.code(409).type('text/plain').send(`Conflict: ${msg}`);
+    }
+    app.log.error({ err }, 'request failed');
+    return reply.code(500).type('text/plain').send('Internal Server Error');
+  });
+
   await app.register(formbody);
   await app.register(fstatic, { root: resolve('public'), prefix: '/' });
   await app.register(dashboard);
@@ -25,6 +35,7 @@ async function main(): Promise<void> {
   await app.register(bills);
   await app.register(budgets);
   await app.register(alerts);
+
   await app.listen({ port: PORT, host: '0.0.0.0' });
 }
 

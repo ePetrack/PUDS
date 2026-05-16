@@ -1,14 +1,11 @@
-import { readFileSync, rmSync, existsSync } from 'node:fs';
+import { readFileSync, rmSync } from 'node:fs';
 import { getDb } from '../db.js';
 
 async function main(): Promise<void> {
   const path = process.env.PUDS_DB ?? 'data/puds.duckdb';
-  if (existsSync(path)) {
-    rmSync(path);
-    if (existsSync(`${path}.wal`)) rmSync(`${path}.wal`);
-    console.log(`removed ${path}`);
-  }
-  const conn = await getDb(); // re-creates file, schema, views
+  rmSync(path, { force: true });
+  rmSync(`${path}.wal`, { force: true });
+  const conn = await getDb();
   await conn.run(readFileSync('db/seed.sql', 'utf8'));
   console.log('seeded');
   process.exit(0);
